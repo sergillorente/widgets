@@ -1,12 +1,29 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
 const Search = () => {
     const [term, setTerm] = useState('');
+    const [results, setResults] = useState([]);
 
-    console.log('I run with every render');
+    console.log(results);
 
     useEffect(() => {
-        console.log('I run after every render and at initial render');
+        const search = async () => {
+            const { data } = await axios.get('https://en.wikipedia.org/w/api.php', {
+                params: {
+                    action: 'query',
+                    list: 'search',
+                    format: 'json',
+                    origin: '*',
+                    srsearch: term
+                }
+            });
+
+            setResults(data.query.search);
+        };
+        if (term) {
+            search();
+        }
     }, [term])
 
     return (
